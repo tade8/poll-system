@@ -3,9 +3,11 @@ package com.system.poll.services.implementations;
 import com.system.poll.data.models.Choices;
 import com.system.poll.data.models.Poll;
 import com.system.poll.data.repository.ChoicesRepository;
+import com.system.poll.data.repository.PollRepository;
 import com.system.poll.data.repository.VotesRepository;
-import com.system.poll.dtos.ChoicesRequest;
+import com.system.poll.dtos.requests.ChoicesRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +34,8 @@ class VoteServiceImplTest {
     private ChoicesRequest choicesRequest;
     private Choices choices;
     private Poll poll;
+    @Mock
+    private PollRepository pollRepository;
 
     @BeforeEach
     void setUp() {
@@ -52,7 +56,7 @@ class VoteServiceImplTest {
     void test_voteOnChoice_ReturnsNumberOfVotes() {
         assertNotNull(poll);
 
-        when(choicesRepository.findChoicesById(choicesRequest.getId())).
+        when(choicesRepository.findById(choicesRequest.getId())).
                 thenReturn(Optional.of(choices));
         when(votesRepository.save(any())).then(returnsFirstArg());
         when(choicesRepository.save(any())).then(returnsFirstArg());
@@ -63,9 +67,25 @@ class VoteServiceImplTest {
     }
 
     @Test
-    public void testDisplayTotalNumberOfVotes() {
+    public void testViewAllVotes() {
         voteService.displayTotalVotes();
 
         verify(votesRepository).findAll();
+    }
+
+    @Test
+    @Disabled
+    public void testCalculateTotalVotes() {
+        when(choicesRepository.findById(choicesRequest.getId())).
+                thenReturn(Optional.of(choices));
+        when(votesRepository.save(any())).then(returnsFirstArg());
+        when(choicesRepository.save(any())).then(returnsFirstArg());
+        voteService.voteOnChoice(choices.getId());
+
+        when(pollRepository.findPollById(poll.getId())).thenReturn(poll);
+        when(choicesRepository.findChoicesById(choices.getId())).thenReturn(Optional.of(choices));
+        voteService.calculateTotalVotes(choicesRequest);
+
+        assertEquals(1, votesRepository.findVotesById(choices.getId()).size());
     }
 }

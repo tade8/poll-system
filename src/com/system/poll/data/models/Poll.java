@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class Poll {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String question;
-    @OneToMany(cascade = CascadeType.DETACH)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "choice_id")
     private List<Choices> choices = new ArrayList<>();
 }

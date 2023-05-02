@@ -4,8 +4,7 @@ import com.system.poll.data.models.Choices;
 import com.system.poll.data.models.Poll;
 import com.system.poll.data.repository.ChoicesRepository;
 import com.system.poll.data.repository.PollRepository;
-import com.system.poll.dtos.ChoicesRequest;
-import com.system.poll.dtos.PollRequest;
+import com.system.poll.dtos.requests.PollRequest;
 import com.system.poll.services.PollService;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +21,27 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public void createPoll(PollRequest pollRequest) {
+    public String createPoll(PollRequest pollRequest) {
         Poll poll = new Poll();
-        ChoicesRequest choicesRequest = new ChoicesRequest();
         Choices choices = new Choices();
-
-        choices.setChoiceText(choicesRequest.getChoiceText());
 
         poll.setQuestion(pollRequest.getQuestion());
         poll.setChoices(pollRequest.getChoices());
 
         choicesRepository.save(choices);
         pollRepository.save(poll);
-
+        return "Poll has been created";
     }
 
     @Override
     public Poll viewPoll(String id) {
         return pollRepository.findPollById(id);
+    }
+
+    @Override
+    public String deletePoll(String id) {
+        Poll poll = viewPoll(id);
+        pollRepository.deletePollById(poll.getId());
+        return "Poll has been deleted";
     }
 }

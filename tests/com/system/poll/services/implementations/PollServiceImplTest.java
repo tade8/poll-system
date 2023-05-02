@@ -3,7 +3,7 @@ package com.system.poll.services.implementations;
 import com.system.poll.data.models.*;
 import com.system.poll.data.repository.ChoicesRepository;
 import com.system.poll.data.repository.PollRepository;
-import com.system.poll.dtos.PollRequest;
+import com.system.poll.dtos.requests.PollRequest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,8 +48,6 @@ class PollServiceImplTest {
         pollRequest.setQuestion("Who will be Nigeria's next president");
         pollRequest.setChoices(Arrays.asList(choice1, choice2, choice3));
 
-        when(pollRepository.findPollById(pollRequest.getId())).
-                thenReturn(new Poll());
         when(choicesRepository.save(any())).then(returnsFirstArg());
         when(pollRepository.save(any())).then(returnsFirstArg());
         pollService.createPoll(pollRequest);
@@ -69,6 +67,15 @@ class PollServiceImplTest {
         pollService.viewPoll(pollRequest.getId());
 
         verify(pollRepository).findPollById(pollRequest.getId());
+    }
+
+    @Test
+    public void test_Deleted_SavedPoll() {
+        when(pollRepository.findPollById(pollRequest.getId())).thenReturn(new Poll());
+
+        pollService.deletePoll(pollRequest.getId());
+
+        verify(pollRepository).deletePollById(pollRequest.getId());
     }
 
 }

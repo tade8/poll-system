@@ -18,7 +18,7 @@ public class Choices {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String choiceText;
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "vote_id")
     private List<Votes> noOfVotes = new ArrayList<>();
 }

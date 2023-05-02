@@ -1,4 +1,4 @@
-package com.system.poll.dtos;
+package com.system.poll.dtos.requests;
 
 import com.system.poll.data.models.Choices;
 import lombok.Data;
