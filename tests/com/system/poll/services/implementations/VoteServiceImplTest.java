@@ -3,11 +3,9 @@ package com.system.poll.services.implementations;
 import com.system.poll.data.models.Choices;
 import com.system.poll.data.models.Poll;
 import com.system.poll.data.repository.ChoicesRepository;
-import com.system.poll.data.repository.PollRepository;
 import com.system.poll.data.repository.VotesRepository;
 import com.system.poll.dtos.requests.ChoicesRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,8 +32,6 @@ class VoteServiceImplTest {
     private ChoicesRequest choicesRequest;
     private Choices choices;
     private Poll poll;
-    @Mock
-    private PollRepository pollRepository;
 
     @BeforeEach
     void setUp() {
@@ -50,12 +46,11 @@ class VoteServiceImplTest {
         poll.setQuestion("Who will be Nigeria's next president");
         poll.setChoices(List.of(choices));
 
+        assertNotNull(poll);
     }
 
     @Test
-    void test_voteOnChoice_ReturnsNumberOfVotes() {
-        assertNotNull(poll);
-
+    void test_VoteOnChoice_ReturnsNumberOfVotes() {
         when(choicesRepository.findById(choicesRequest.getId())).
                 thenReturn(Optional.of(choices));
         when(votesRepository.save(any())).then(returnsFirstArg());
@@ -67,25 +62,22 @@ class VoteServiceImplTest {
     }
 
     @Test
-    public void testViewAllVotes() {
+    public void test_ViewAllVotes() {
         voteService.displayTotalVotes();
 
         verify(votesRepository).findAll();
     }
 
     @Test
-    @Disabled
-    public void testCalculateTotalVotes() {
+    public void test_Display_TotalVotes() {
         when(choicesRepository.findById(choicesRequest.getId())).
                 thenReturn(Optional.of(choices));
         when(votesRepository.save(any())).then(returnsFirstArg());
         when(choicesRepository.save(any())).then(returnsFirstArg());
+
         voteService.voteOnChoice(choices.getId());
 
-        when(pollRepository.findPollById(poll.getId())).thenReturn(poll);
-        when(choicesRepository.findChoicesById(choices.getId())).thenReturn(Optional.of(choices));
-        voteService.calculateTotalVotes(choicesRequest);
-
-        assertEquals(1, votesRepository.findVotesById(choices.getId()).size());
+        voteService.calculateTotalVotes(poll.getId());
+        assertEquals(1, choices.getNoOfVotes().size());
     }
 }

@@ -33,10 +33,7 @@ class PollServiceImplTest {
     @BeforeEach
     void setUp() {
         pollRequest = new PollRequest();
-    }
 
-    @Test
-    public void createPoll_GetsSaved() {
         Choices choice1 = new Choices();
         Choices choice2 = new Choices();
         Choices choice3 = new Choices();
@@ -48,15 +45,20 @@ class PollServiceImplTest {
         pollRequest.setQuestion("Who will be Nigeria's next president");
         pollRequest.setChoices(Arrays.asList(choice1, choice2, choice3));
 
+        assertNotNull(pollRequest);
+    }
+
+    @Test
+    public void createPoll_GetsSaved() {
         when(choicesRepository.save(any())).then(returnsFirstArg());
         when(pollRepository.save(any())).then(returnsFirstArg());
+
         pollService.createPoll(pollRequest);
 
+        assertEquals(pollRequest.getQuestion(),
+                "Who will be Nigeria's next president");
         assertEquals(pollRequest.getChoices().get(1).getChoiceText(),
                 "Atiku Abubakar");
-        assertEquals(pollRequest.getQuestion(),
-                 "Who will be Nigeria's next president");
-        assertNotNull(pollRequest);
     }
 
     @Test

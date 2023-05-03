@@ -8,14 +8,14 @@ import com.system.poll.dtos.requests.PollRequest;
 import com.system.poll.services.PollService;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
     private final ChoicesRepository choicesRepository;
 
 
-    public PollServiceImpl(PollRepository pollRepository, ChoicesRepository choicesRepository) {
+    public PollServiceImpl(PollRepository pollRepository,
+                           ChoicesRepository choicesRepository) {
         this.pollRepository = pollRepository;
         this.choicesRepository = choicesRepository;
     }
@@ -34,14 +34,16 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public Poll viewPoll(String id) {
-        return pollRepository.findPollById(id);
-    }
-
-    @Override
     public String deletePoll(String id) {
         Poll poll = viewPoll(id);
         pollRepository.deletePollById(poll.getId());
         return "Poll has been deleted";
     }
+
+    @Override
+    public Poll viewPoll(String id) {
+        return pollRepository.findPollById(id);
+    }
+
+
 }

@@ -1,14 +1,12 @@
 package com.system.poll.controller;
 
+import com.system.poll.dtos.requests.ChoicesRequest;
 import com.system.poll.dtos.response.ApiResponse;
 import com.system.poll.services.VoteService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("poll/")
@@ -32,17 +30,17 @@ public class VoteController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-//    @GetMapping("totalVotes/{id}")
-//    public ResponseEntity<?> calculateTotalVotes(@PathVariable String id,
-//                                                 HttpServletRequest httpServletRequest) {
-//        ApiResponse apiResponse = ApiResponse.
-//                builder().
-//                status(HttpStatus.OK).
-//                data(voteService.calculateTotalVotes(id)).
-//                path(httpServletRequest.getRequestURI()).
-//                isSuccessful(true).
-//                build();
-//        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-//    }
+    @GetMapping("totalVotes/{id}")
+    public ResponseEntity<?> calculateTotalVotes(@PathVariable String id,
+                                                 HttpServletRequest httpServletRequest) {
+        ApiResponse apiResponse = ApiResponse.
+                builder().
+                status(HttpStatus.OK).
+                data(voteService.calculateTotalVotes(id)).
+                path(httpServletRequest.getRequestURI()).
+                isSuccessful(true).
+                build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
 
 }

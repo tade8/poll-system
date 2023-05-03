@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface VotesRepository extends JpaRepository<Votes, String> {
     List<Votes> findVotesById(String id);
+    List<Votes> findAllById(String id);
 
 }
