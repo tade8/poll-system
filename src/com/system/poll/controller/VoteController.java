@@ -1,6 +1,5 @@
 package com.system.poll.controller;
 
-import com.system.poll.dtos.requests.ChoicesRequest;
 import com.system.poll.dtos.response.ApiResponse;
 import com.system.poll.services.VoteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ public class VoteController {
     }
 
     @GetMapping("totalVotes/{id}")
-    public ResponseEntity<?> calculateTotalVotes(@PathVariable String id,
+    public ResponseEntity<?> displayTotalVotes(@PathVariable String id,
                                                  HttpServletRequest httpServletRequest) {
         ApiResponse apiResponse = ApiResponse.
                 builder().
