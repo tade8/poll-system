@@ -69,6 +69,12 @@ class VoteServiceImplTest {
     }
 
     @Test
+    public void test_PollHasZeroVotes_WhenCreated() {
+        voteService.calculateTotalVotes(poll.getId());
+        assertEquals(0, choices.getNoOfVotes().size());
+    }
+
+    @Test
     public void test_Display_TotalVotes() {
         when(choicesRepository.findById(choicesRequest.getId())).
                 thenReturn(Optional.of(choices));

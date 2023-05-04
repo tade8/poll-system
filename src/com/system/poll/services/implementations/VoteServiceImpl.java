@@ -4,6 +4,7 @@ import com.system.poll.data.models.Choices;
 import com.system.poll.data.models.Votes;
 import com.system.poll.data.repository.ChoicesRepository;
 import com.system.poll.data.repository.VotesRepository;
+import com.system.poll.dtos.requests.PollRequest;
 import com.system.poll.exceptions.ChoiceNotFoundException;
 import com.system.poll.services.VoteService;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Choices voteOnChoice(String id) {
+    public Long voteOnChoice(String id) {
         Choices choices1 = choicesRepository.findById(id).
                 orElseThrow(()-> new ChoiceNotFoundException("This choice does not exist"));
 
@@ -31,7 +32,8 @@ public class VoteServiceImpl implements VoteService {
         choices1.getNoOfVotes().add(votes);
 
         votesRepository.save(votes);
-        return choicesRepository.save(choices1);
+        var result = choicesRepository.save(choices1);
+        return (long) result.getNoOfVotes().size();
     }
 
     @Override
@@ -45,4 +47,5 @@ public class VoteServiceImpl implements VoteService {
 
         return String.format("%d votes", votes.size());
     }
+
 }

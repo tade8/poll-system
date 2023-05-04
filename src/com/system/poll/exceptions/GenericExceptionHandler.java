@@ -21,6 +21,7 @@ public class GenericExceptionHandler {
                 path(httpServletRequest.getRequestURI()).
                 timestamp(ZonedDateTime.now()).
                 build();
+
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 }
