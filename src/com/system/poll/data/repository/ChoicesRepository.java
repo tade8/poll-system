@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ChoicesRepository extends JpaRepository<Choices, Long> {
-    Optional<Choices> findById(String id);
+    Optional<Choices> findChoiceById(String id);
 
 }

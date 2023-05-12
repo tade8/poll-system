@@ -12,7 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -29,21 +30,17 @@ class PollServiceImplTest {
     @Mock
     private ChoicesRepository choicesRepository;
     private PollRequest pollRequest;
+    private final String time = "01:00:00";
 
     @BeforeEach
     void setUp() {
-        pollRequest = new PollRequest();
+        Choices choice1 = new Choices("Peter Obi");
+        Choices choice2 = new Choices("Atiku Abubakar");
 
-        Choices choice1 = new Choices();
-        Choices choice2 = new Choices();
-        Choices choice3 = new Choices();
+        Choices[] choices = {choice1, choice2};
 
-        choice1.setChoiceText("Peter Obi");
-        choice2.setChoiceText("Atiku Abubakar");
-        choice3.setChoiceText("Bola Tinubu");
-
-        pollRequest.setQuestion("Who will be Nigeria's next president");
-        pollRequest.setChoices(Arrays.asList(choice1, choice2, choice3));
+        pollRequest = new PollRequest("Who will be Nigeria's next president",
+                List.of(choices), time);
 
         assertNotNull(pollRequest);
     }
@@ -59,21 +56,22 @@ class PollServiceImplTest {
                 "Who will be Nigeria's next president");
         assertEquals(pollRequest.getChoices().get(1).getChoiceText(),
                 "Atiku Abubakar");
+        assertNotNull(pollRequest.getSpecifiedEndTime());
     }
 
     @Test
     public void test_View_SavedPoll() {
         when(pollRepository.findPollById(pollRequest.getId())).
-                thenReturn(new Poll());
+                thenReturn(Optional.of(new Poll()));
 
-        pollService.viewPoll(pollRequest.getId());
+        pollService.viewPollById(pollRequest.getId());
 
         verify(pollRepository).findPollById(pollRequest.getId());
     }
 
     @Test
-    public void test_Deleted_SavedPoll() {
-        when(pollRepository.findPollById(pollRequest.getId())).thenReturn(new Poll());
+    public void test_Delete_SavedPoll() {
+        when(pollRepository.findPollById(pollRequest.getId())).thenReturn(Optional.of(new Poll()));
 
         pollService.deletePoll(pollRequest.getId());
 

@@ -16,26 +16,26 @@ public class VoteController {
         this.voteService = voteService;
     }
 
-    @GetMapping("vote/{id}")
-    public ResponseEntity<?> voteOnChoice(@PathVariable String id,
+    @GetMapping("vote/{choiceId}")
+    public ResponseEntity<?> voteOnChoice(@PathVariable String choiceId,
                                           HttpServletRequest httpServletRequest) {
         ApiResponse apiResponse = ApiResponse.
                 builder().
                 status(HttpStatus.OK).
-                data(voteService.voteOnChoice(id)).
+                data(voteService.voteOnChoice(choiceId)).
                 path(httpServletRequest.getRequestURI()).
                 isSuccessful(true).
                 build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("totalVotes/{id}")
-    public ResponseEntity<?> displayTotalVotes(@PathVariable String id,
+    @GetMapping("totalVotes/{pollId}")
+    public ResponseEntity<?> displayTotalVotes(@PathVariable String pollId,
                                                  HttpServletRequest httpServletRequest) {
         ApiResponse apiResponse = ApiResponse.
                 builder().
                 status(HttpStatus.OK).
-                data(voteService.calculateTotalVotes(id)).
+                data(voteService.displayTotalVotes(pollId)).
                 path(httpServletRequest.getRequestURI()).
                 isSuccessful(true).
                 build();

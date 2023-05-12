@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 @RestControllerAdvice
 public class GenericExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({PollNotFoundException.class, ChoiceNotFoundException.class})
     public ResponseEntity<?> handleGenericException(RuntimeException exception,
                                                     HttpServletRequest httpServletRequest) {
         ApiResponse apiResponse = ApiResponse.builder().
