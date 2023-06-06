@@ -1,11 +1,12 @@
 package com.system.poll.controller;
 
-import com.system.poll.dtos.response.ApiResponse;
+import com.system.poll.dtos.response.APIResponse;
 import com.system.poll.services.VoteService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
@@ -16,26 +17,29 @@ public class VoteController {
         this.voteService = voteService;
     }
 
-    @GetMapping("vote/{choiceId}")
-    public ResponseEntity<?> voteOnChoice(@PathVariable String choiceId,
+    @GetMapping("vote/{id}/{choiceId}")
+    public ResponseEntity<?> voteOnChoice(@PathVariable String id,
+                                          @PathVariable String choiceId,
                                           HttpServletRequest httpServletRequest) {
-        ApiResponse apiResponse = ApiResponse.
+        APIResponse apiResponse = APIResponse.
                 builder().
+                timestamp(ZonedDateTime.now()).
                 status(HttpStatus.OK).
-                data(voteService.voteOnChoice(choiceId)).
+                data(voteService.voteDisplayResults(id, choiceId)).
                 path(httpServletRequest.getRequestURI()).
                 isSuccessful(true).
                 build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("totalVotes/{pollId}")
-    public ResponseEntity<?> displayTotalVotes(@PathVariable String pollId,
-                                                 HttpServletRequest httpServletRequest) {
-        ApiResponse apiResponse = ApiResponse.
+    @GetMapping("totalVotes/{id}")
+    public ResponseEntity<?> displayTotalVotes(@PathVariable String id,
+                                               HttpServletRequest httpServletRequest) {
+        APIResponse apiResponse = APIResponse.
                 builder().
+                timestamp(ZonedDateTime.now()).
                 status(HttpStatus.OK).
-                data(voteService.displayTotalVotes(pollId)).
+                data(voteService.displayTotalVotes(id)).
                 path(httpServletRequest.getRequestURI()).
                 isSuccessful(true).
                 build();

@@ -1,5 +1,6 @@
 package com.system.poll.dtos.response;
 
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Builder
-public class ApiResponse {
+public class APIResponse {
     private ZonedDateTime timestamp;
     private HttpStatus status;
     private Object data;

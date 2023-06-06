@@ -1,20 +1,15 @@
 package com.system.poll.services.implementations;
 
-import com.system.poll.data.models.Choices;
-import com.system.poll.data.models.Poll;
-import com.system.poll.data.repository.ChoicesRepository;
-import com.system.poll.data.repository.VotesRepository;
-import com.system.poll.dtos.requests.ChoicesRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import com.system.poll.data.models.*;
+import com.system.poll.data.repository.*;
+import com.system.poll.dtos.requests.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.mockito.*;
+import org.mockito.junit.jupiter.*;
 
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -57,7 +52,7 @@ class VoteServiceImplTest {
         when(votesRepository.save(any())).then(returnsFirstArg());
         when(choicesRepository.save(any())).then(returnsFirstArg());
 
-        voteService.voteOnChoice(choicesRequest.getId());
+        voteService.voteDisplayResults(poll.getId(), choicesRequest.getId());
 
         assertEquals(1L, choices.getNoOfVotes().size());
     }
@@ -70,12 +65,9 @@ class VoteServiceImplTest {
 
     @Test
     public void test_Display_TotalVotes() {
-        when(choicesRepository.findChoiceById(choicesRequest.getId())).
-                thenReturn(Optional.of(choices));
-        when(choicesRepository.save(any())).then(returnsFirstArg());
+        test_VoteOnChoice_ReturnsNumberOfVotes();
+        voteService.voteDisplayResults(poll.getId(), choices.getId());
 
-        voteService.voteOnChoice(choices.getId());
-        voteService.voteOnChoice(choices.getId());
         voteService.displayTotalVotes(poll.getId());
 
         assertEquals(2, choices.getNoOfVotes().size());

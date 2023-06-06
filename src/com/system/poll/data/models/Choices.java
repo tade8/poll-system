@@ -1,13 +1,9 @@
 package com.system.poll.data.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -18,8 +14,8 @@ public class Choices {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String choiceText;
-    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-    @JoinColumn(name = "choice_id")
+    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "choice_id", referencedColumnName = "id")
     private List<Votes> noOfVotes = new ArrayList<>();
 
     public Choices(String choiceText) {

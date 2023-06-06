@@ -1,9 +1,7 @@
 package com.system.poll.data.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -14,4 +12,8 @@ public class Votes {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private Long noOfVotes;
+
+    public Votes(long voteCount) {
+        noOfVotes = voteCount;
+    }
 }

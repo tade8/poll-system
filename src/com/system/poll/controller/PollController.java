@@ -1,12 +1,14 @@
 package com.system.poll.controller;
 
 import com.system.poll.dtos.requests.PollRequest;
-import com.system.poll.dtos.response.ApiResponse;
+import com.system.poll.dtos.response.APIResponse;
 import com.system.poll.services.PollService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
@@ -18,10 +20,11 @@ public class PollController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
+    public ResponseEntity<?> createPoll(@RequestBody @Valid PollRequest pollRequest,
                                         HttpServletRequest httpServletRequest) {
-        ApiResponse apiResponse = ApiResponse.
+        APIResponse apiResponse = APIResponse.
                 builder().
+                timestamp(ZonedDateTime.now()).
                 status(HttpStatus.OK).
                 data(pollService.createPoll(pollRequest)).
                 path(httpServletRequest.getRequestURI()).
@@ -33,8 +36,9 @@ public class PollController {
     @GetMapping("delete/{id}")
     public ResponseEntity<?> deletePoll(@PathVariable String id,
                                         HttpServletRequest httpServletRequest) {
-        ApiResponse apiResponse = ApiResponse.
+        APIResponse apiResponse = APIResponse.
                 builder().
+                timestamp(ZonedDateTime.now()).
                 status(HttpStatus.OK).
                 data(pollService.deletePoll(id)).
                 path(httpServletRequest.getRequestURI()).
