@@ -5,12 +5,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 
 @RestControllerAdvice
 public class GenericExceptionHandler {
 
-    @ExceptionHandler(value = {PollNotFoundException.class, ChoiceNotFoundException.class, Exception.class})
+    @ExceptionHandler(value = {
+            PollNotFoundException.class,
+            ChoiceNotFoundException.class,
+            NullPointerException.class,
+            DateTimeException.class
+    })
     public ResponseEntity<?> handleGenericException(RuntimeException exception,
                                                     HttpServletRequest httpServletRequest) {
         APIResponse apiResponse = APIResponse.

@@ -27,21 +27,22 @@ class PollServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Choices choice1 = new Choices("Peter Obi");
-        Choices choice2 = new Choices("Atiku Abubakar");
-
-        Choices[] choices = {choice1, choice2};
-
-        pollRequest = new PollRequest("Who will be Nigeria's next president",
-                List.of(choices), TIME);
-
+        Choices[] choices = {
+                new Choices("Peter Obi"),
+                new Choices("Atiku Abubakar")
+        };
+        pollRequest = new PollRequest(
+                "Who will be Nigeria's next president",
+                List.of(choices),
+                TIME
+        );
         assertNotNull(pollRequest);
     }
 
     @Test
     public void createPoll_GetsSaved() {
         when(pollRepository.save(any())).then(returnsFirstArg());
-        
+
         pollService.createPoll(pollRequest);
 
         assertEquals(pollRequest.getQuestion(),

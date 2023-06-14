@@ -26,14 +26,19 @@ public class PollServiceImpl implements PollService {
             poll.setSpecifiedEndTime(specifiedEndTime);
             pollRepository.save(poll);
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             throw new NullPointerException("This field cannot be empty");
         }
         return "Poll has been created";
     }
 
     private LocalTime formatSpecifiedTime(PollRequest pollRequest, DateTimeFormatter timeFormatter) {
-        return LocalTime.parse(pollRequest.getSpecifiedEndTime(), timeFormatter);
+        try {
+            return LocalTime.parse(pollRequest.getSpecifiedEndTime(), timeFormatter);
+        }
+        catch (RuntimeException e) {
+            throw new DateTimeException("The time format provided is invalid");
+        }
     }
 
     @Override
@@ -49,5 +54,4 @@ public class PollServiceImpl implements PollService {
                 orElseThrow(()-> new PollNotFoundException(
                         "This poll does not exist"));
     }
-
 }

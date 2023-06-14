@@ -4,7 +4,6 @@ import com.system.poll.dtos.requests.PollRequest;
 import com.system.poll.dtos.response.APIResponse;
 import com.system.poll.services.PollService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,7 @@ public class PollController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createPoll(@RequestBody @Valid PollRequest pollRequest,
+    public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
                                         HttpServletRequest httpServletRequest) {
         APIResponse apiResponse = APIResponse.
                 builder().
