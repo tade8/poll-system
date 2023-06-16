@@ -49,7 +49,6 @@ class VoteServiceImplTest {
     void test_VoteOnChoice_ReturnsNumberOfVotes() {
         when(choicesRepository.findChoiceById(choicesRequest.getId())).
                 thenReturn(Optional.of(choices));
-        when(votesRepository.save(any())).then(returnsFirstArg());
         when(choicesRepository.save(any())).then(returnsFirstArg());
 
         voteService.voteDisplayResults(poll.getId(), choicesRequest.getId());

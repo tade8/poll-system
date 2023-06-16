@@ -30,7 +30,6 @@ public class VoteServiceImpl implements VoteService {
         Votes votes = new Votes(1L);
         choice.getNoOfVotes().add(votes);
 
-        votesRepository.save(votes);
         choicesRepository.save(choice);
     }
 

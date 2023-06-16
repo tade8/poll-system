@@ -17,27 +17,26 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public String createPoll(PollRequest pollRequest) {
-        Poll poll = new Poll();
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_TIME;
-        LocalTime specifiedEndTime = formatSpecifiedTime(pollRequest, timeFormatter);
-        try {
-            poll.setQuestion(pollRequest.getQuestion());
-            poll.setChoices(pollRequest.getChoices());
-            poll.setSpecifiedEndTime(specifiedEndTime);
-            pollRepository.save(poll);
-        }
-        catch (RuntimeException e) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime time = formatSpecifiedTime(pollRequest, timeFormatter);
+        Poll poll = new Poll(
+                pollRequest.getQuestion(),
+                pollRequest.getChoices(),
+                time
+        );
+        if (poll.getQuestion().isEmpty() || poll.getChoices().isEmpty()) {
             throw new NullPointerException("This field cannot be empty");
         }
+        pollRepository.save(poll);
         return "Poll has been created";
     }
 
-    private LocalTime formatSpecifiedTime(PollRequest pollRequest, DateTimeFormatter timeFormatter) {
+    private static LocalTime formatSpecifiedTime(PollRequest pollRequest, DateTimeFormatter timeFormatter) {
         try {
             return LocalTime.parse(pollRequest.getSpecifiedEndTime(), timeFormatter);
         }
         catch (RuntimeException e) {
-            throw new DateTimeException("The time format provided is invalid");
+            throw new DateTimeException("This time format is invalid");
         }
     }
 

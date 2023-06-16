@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
 import org.mockito.junit.jupiter.*;
 
+import java.time.DateTimeException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,20 @@ class PollServiceImplTest {
                 "Who will be Nigeria's next president");
         assertEquals(pollRequest.getChoices().get(1).getChoiceText(),
                 "Atiku Abubakar");
+    }
+
+    @Test
+    public void create_Empty_Poll_ThrowsNullPointerException() {
+        Choices[] choices = {};
+        pollRequest.setQuestion("");
+        pollRequest.setChoices(List.of(choices));
+        assertThrows(NullPointerException.class, ()-> pollService.createPoll(pollRequest));
+    }
+
+    @Test
+    public void invalid_TimeFormat_ThrowsDateTimeException() {
+        pollRequest.setSpecifiedEndTime("23:0:00");
+        assertThrows(DateTimeException.class, ()-> pollService.createPoll(pollRequest));
     }
 
     @Test

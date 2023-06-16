@@ -1,6 +1,5 @@
 package com.system.poll.dtos.response;
 
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;

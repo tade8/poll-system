@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface ChoicesRepository extends JpaRepository<Choices, Long> {
     Optional<Choices> findChoiceById(String id);
-
 }

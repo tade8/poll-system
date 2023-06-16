@@ -3,7 +3,6 @@ package com.system.poll.data.repository;
 import com.system.poll.data.models.Votes;
 import com.system.poll.dtos.response.VoteResultsResponse;
 import org.springframework.data.jpa.repository.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
