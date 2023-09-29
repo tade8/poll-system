@@ -7,6 +7,7 @@ import com.system.poll.exceptions.PollNotFoundException;
 import com.system.poll.services.PollService;
 import lombok.*;
 import org.springframework.stereotype.Service;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
@@ -17,7 +18,7 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public String createPoll(PollRequest pollRequest) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime time = formatSpecifiedTime(pollRequest, timeFormatter);
         Poll poll = new Poll(
                 pollRequest.getQuestion(),
@@ -33,7 +34,8 @@ public class PollServiceImpl implements PollService {
 
     private static LocalTime formatSpecifiedTime(PollRequest pollRequest, DateTimeFormatter timeFormatter) {
         try {
-            return LocalTime.parse(pollRequest.getSpecifiedEndTime(), timeFormatter);
+            return LocalTime.parse(
+                    pollRequest.getSpecifiedEndTime(), timeFormatter);
         }
         catch (RuntimeException e) {
             throw new DateTimeException("This time format is invalid");
@@ -42,8 +44,7 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public String deletePoll(String pollId) {
-        Poll poll = viewPollById(pollId);
-        pollRepository.deletePollById(poll.getId());
+        pollRepository.deletePollById(pollId);
         return "Poll has been deleted";
     }
 

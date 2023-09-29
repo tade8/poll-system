@@ -15,7 +15,8 @@ public class GenericExceptionHandler {
             PollNotFoundException.class,
             ChoiceNotFoundException.class,
             NullPointerException.class,
-            DateTimeException.class
+            DateTimeException.class,
+            IllegalStateException.class
     })
     public ResponseEntity<?> handleGenericException(RuntimeException exception,
                                                     HttpServletRequest httpServletRequest) {

@@ -11,38 +11,53 @@ import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
+//@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class PollController {
-    private final PollService pollService;
+  private final PollService pollService;
 
-    public PollController(PollService pollService) {
-        this.pollService = pollService;
-    }
+  public PollController(PollService pollService) {
+    this.pollService = pollService;
+  }
 
-    @PostMapping("")
-    public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
-                                        HttpServletRequest httpServletRequest) {
-        APIResponse apiResponse = APIResponse.
-                builder().
-                timestamp(ZonedDateTime.now()).
-                status(HttpStatus.OK).
-                data(pollService.createPoll(pollRequest)).
-                path(httpServletRequest.getRequestURI()).
-                isSuccessful(true).
-                build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
+  @PostMapping("")
+  public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
+                                      HttpServletRequest httpServletRequest) {
+    APIResponse apiResponse = APIResponse.
+            builder().
+            timestamp(ZonedDateTime.now()).
+            status(HttpStatus.OK).
+            data(pollService.createPoll(pollRequest)).
+            path(httpServletRequest.getRequestURI()).
+            isSuccessful(true).
+            build();
+    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+  }
 
-    @GetMapping("delete/{id}")
-    public ResponseEntity<?> deletePoll(@PathVariable String id,
-                                        HttpServletRequest httpServletRequest) {
-        APIResponse apiResponse = APIResponse.
-                builder().
-                timestamp(ZonedDateTime.now()).
-                status(HttpStatus.OK).
-                data(pollService.deletePoll(id)).
-                path(httpServletRequest.getRequestURI()).
-                isSuccessful(true).
-                build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
+  @GetMapping("delete/{id}")
+  public ResponseEntity<?> deletePoll(@PathVariable String id,
+                                      HttpServletRequest httpServletRequest) {
+    APIResponse apiResponse = APIResponse.
+            builder().
+            timestamp(ZonedDateTime.now()).
+            status(HttpStatus.OK).
+            data(pollService.deletePoll(id)).
+            path(httpServletRequest.getRequestURI()).
+            isSuccessful(true).
+            build();
+    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<?> getPoll(@PathVariable String id,
+                                      HttpServletRequest httpServletRequest) {
+    APIResponse apiResponse = APIResponse.
+            builder().
+            timestamp(ZonedDateTime.now()).
+            status(HttpStatus.OK).
+            data(pollService.viewPollById(id)).
+            path(httpServletRequest.getRequestURI()).
+            isSuccessful(true).
+            build();
+    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+  }
 }

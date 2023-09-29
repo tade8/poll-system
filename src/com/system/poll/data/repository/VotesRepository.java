@@ -7,16 +7,16 @@ import org.springframework.data.jpa.repository.*;
 import java.util.*;
 
 public interface VotesRepository extends JpaRepository<Votes, String> {
-    @Query(value = "SELECT poll.id, no_of_votes " +
+    @Query(value = "SELECT count(no_of_votes) " +
                     "FROM poll " +
                     "JOIN choices " +
                     "ON poll.id = poll_id " +
                     "JOIN votes " +
                     "ON choices.id = choice_id "+
                     "WHERE poll.id = ?1 ", nativeQuery = true)
-    List<Votes> getTotalVotes(String id);
+    Long getTotalVotes(String id);
 
-    @Query(value = "SELECT round(count(*) * 100 / sum(count(*)) OVER()) " +
+    @Query(value = "SELECT round(count(votes.no_of_votes) * 100 / sum(count(votes.no_of_votes)) OVER()) " +
                     "AS votePercentage " +
                     "FROM poll JOIN choices ON poll.id = poll_id " +
                     "JOIN votes ON choices.id = choice_id " +

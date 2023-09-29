@@ -24,7 +24,6 @@ class PollServiceImplTest {
     @Mock
     private PollRepository pollRepository;
     private PollRequest pollRequest;
-    private static final String TIME = "01:00:00";
 
     @BeforeEach
     void setUp() {
@@ -32,12 +31,12 @@ class PollServiceImplTest {
                 new Choices("Peter Obi"),
                 new Choices("Atiku Abubakar")
         };
+        String time = "01:00";
         pollRequest = new PollRequest(
                 "Who will be Nigeria's next president",
                 List.of(choices),
-                TIME
+                time
         );
-        assertNotNull(pollRequest);
     }
 
     @Test
@@ -46,10 +45,12 @@ class PollServiceImplTest {
 
         pollService.createPoll(pollRequest);
 
+        assertNotNull(pollRequest);
         assertEquals(pollRequest.getQuestion(),
                 "Who will be Nigeria's next president");
         assertEquals(pollRequest.getChoices().get(1).getChoiceText(),
                 "Atiku Abubakar");
+        verify(pollRepository).save(any());
     }
 
     @Test
@@ -62,29 +63,30 @@ class PollServiceImplTest {
 
     @Test
     public void invalid_TimeFormat_ThrowsDateTimeException() {
-        pollRequest.setSpecifiedEndTime("23:0:00");
+        pollRequest.setSpecifiedEndTime("23:0");
+        pollRequest.setSpecifiedEndTime("3:00");
+
         assertThrows(DateTimeException.class, ()-> pollService.createPoll(pollRequest));
     }
 
     @Test
-    public void test_View_SavedPoll() {
+    public void test_View_SavedPoll_ReturnsPoll() {
         when(pollRepository.findPollById(pollRequest.getId())).
                 thenReturn(Optional.of(new Poll()));
 
         pollService.viewPollById(pollRequest.getId());
 
+        assertNotNull(pollRequest);
         assertEquals("Who will be Nigeria's next president",
                 pollRequest.getQuestion());
     }
 
     @Test
-    public void test_Delete_SavedPoll() {
-        when(pollRepository.findPollById(pollRequest.getId())).
-                thenReturn(Optional.of(new Poll()));
+    public void test_Delete_SavedPoll_Returns_SuccessMessage() {
+        pollService.createPoll(pollRequest);
+        assertNotNull(pollRequest);
 
-        pollService.deletePoll(pollRequest.getId());
-
-        assertEquals(0L, pollRepository.findAll().size());
+        assertEquals("Poll has been deleted",
+                pollService.deletePoll(pollRequest.getId()));
     }
-
 }
