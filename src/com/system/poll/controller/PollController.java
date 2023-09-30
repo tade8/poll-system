@@ -6,12 +6,10 @@ import com.system.poll.services.PollService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
-//@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class PollController {
   private final PollService pollService;
 
@@ -21,7 +19,7 @@ public class PollController {
 
   @PostMapping("")
   public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
-                                      HttpServletRequest httpServletRequest) {
+                                 HttpServletRequest httpServletRequest) {
     APIResponse apiResponse = APIResponse.
             builder().
             timestamp(ZonedDateTime.now()).
