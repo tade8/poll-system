@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class PollRequest {
-    private String id;
+    private String poll_id;
     private String question;
     private List<Choices> choices = new ArrayList<>();
     private String specifiedEndTime;

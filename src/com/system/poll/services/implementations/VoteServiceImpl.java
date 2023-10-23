@@ -2,47 +2,38 @@ package com.system.poll.services.implementations;
 
 import com.system.poll.data.models.*;
 import com.system.poll.data.repository.*;
-import com.system.poll.dtos.response.VoteResultsResponse;
 import com.system.poll.exceptions.*;
+import com.system.poll.services.PollService;
 import com.system.poll.services.VoteService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
     private final ChoicesRepository choicesRepository;
-    private final VotesRepository votesRepository;
-    private final PollRepository pollRepository;
+    private final PollService pollService;
 
     @Override
-    public List<VoteResultsResponse> voteDisplayResults(String id, String choiceId) {
-      saveChoiceWithVote(choiceId, id);
-      return votesRepository.displayVoteResults(id);
+    public Long voteDisplayResults(String id, String choiceId) {
+      var choice = saveChoiceWithVote(choiceId, id);
+      return choice.getVoteCount();
     }
 
-    private void saveChoiceWithVote(String id, String pollId) {
-      Poll poll = pollRepository.findPollById(pollId).
-              orElseThrow(()-> new PollNotFoundException("Poll does not exist"));
+    private Choices saveChoiceWithVote(String id, String pollId) {
+      Poll poll = pollService.viewPollById(pollId);
+      if (poll.isOver()) throw new IllegalStateException("Poll duration is over");
 
-      if (poll.isOver()) return;
+      Choices choice = findChoiceById(id);
+      choice.increaseVoteCount();
 
-      Choices choice = choicesRepository.findChoiceById(id).
-              orElseThrow(()-> new ChoiceNotFoundException("This choice does not exist"));
-      Votes votes = new Votes(1L);
-      choice.getNoOfVotes().add(votes);
-
-      choicesRepository.save(choice);
+      return choicesRepository.save(choice);
     }
 
-    @Override
-    public String displayTotalVotes(String id) {
-        Long noOfVotes = votesRepository.getTotalVotes(id);
-        if (noOfVotes == 0 || noOfVotes == 1)
-            return String.format("%d vote", noOfVotes);
-        return String.format("%d votes", noOfVotes);
+    private Choices findChoiceById(String choiceId) {
+        return choicesRepository.findChoiceById(choiceId).
+                orElseThrow(()-> new ChoiceNotFoundException("This choice does not exist"));
     }
 }

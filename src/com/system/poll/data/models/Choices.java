@@ -1,10 +1,7 @@
 package com.system.poll.data.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -14,13 +11,18 @@ public class Choices {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    @NotBlank
     private String choiceText;
-    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "vote_id")
-    private List<Votes> noOfVotes = new ArrayList<>();
+    private Long voteCount = 0L;
 
     public Choices(String choiceText) {
         this.choiceText = choiceText;
+    }
+
+    public Choices(long voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public void increaseVoteCount() {
+        voteCount += 1;
     }
 }

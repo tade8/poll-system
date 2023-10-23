@@ -71,14 +71,13 @@ class PollServiceImplTest {
 
     @Test
     public void test_View_SavedPoll_ReturnsPoll() {
-        when(pollRepository.findPollById(pollRequest.getId())).
+        Poll poll = new Poll();
+        when(pollRepository.findPollById(pollRequest.getPoll_id())).
                 thenReturn(Optional.of(new Poll()));
 
-        pollService.viewPollById(pollRequest.getId());
+        var foundPoll = pollService.viewPollById(pollRequest.getPoll_id());
 
-        assertNotNull(pollRequest);
-        assertEquals("Who will be Nigeria's next president",
-                pollRequest.getQuestion());
+        assertEquals(poll, foundPoll);
     }
 
     @Test
@@ -87,6 +86,7 @@ class PollServiceImplTest {
         assertNotNull(pollRequest);
 
         assertEquals("Poll has been deleted",
-                pollService.deletePoll(pollRequest.getId()));
+                pollService.deletePoll(pollRequest.getPoll_id()));
+        verify(pollRepository).deletePollById(pollRequest.getPoll_id());
     }
 }

@@ -31,19 +31,4 @@ public class VoteController {
                 build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
-
-    @GetMapping("totalVotes/{id}")
-    public ResponseEntity<?> displayTotalVotes(@PathVariable String id,
-                                               HttpServletRequest httpServletRequest) {
-        APIResponse apiResponse = APIResponse.
-                builder().
-                timestamp(ZonedDateTime.now()).
-                status(HttpStatus.OK).
-                data(voteService.displayTotalVotes(id)).
-                path(httpServletRequest.getRequestURI()).
-                isSuccessful(true).
-                build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
-
 }

@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
+@CrossOrigin("http://localhost:5500")
 public class PollController {
   private final PollService pollService;
 
