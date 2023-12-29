@@ -2,38 +2,42 @@ package com.system.poll.services.implementations;
 
 import com.system.poll.data.models.*;
 import com.system.poll.data.repository.*;
+import com.system.poll.dtos.requests.VoteRequest;
+import com.system.poll.dtos.response.VoteResultsResponse;
 import com.system.poll.exceptions.*;
-import com.system.poll.services.PollService;
-import com.system.poll.services.VoteService;
+import com.system.poll.services.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 
 @Service
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
     private final ChoicesRepository choicesRepository;
-    private final PollService pollService;
+    private final UserService userService;
 
     @Override
-    public Long voteDisplayResults(String id, String choiceId) {
-      var choice = saveChoiceWithVote(choiceId, id);
-      return choice.getVoteCount();
+    public VoteResultsResponse voteDisplayResults(VoteRequest voteRequest) {
+      Choice savedChoice = saveChoiceWithVote(voteRequest.getUserId(), voteRequest.getChoiceId());
+      return new VoteResultsResponse(savedChoice.getUsers(), savedChoice.getVoteCount(), savedChoice.getVoteTime());
     }
 
-    private Choices saveChoiceWithVote(String id, String pollId) {
-      Poll poll = pollService.viewPollById(pollId);
-      if (poll.isOver()) throw new IllegalStateException("Poll duration is over");
+    private Choice saveChoiceWithVote(String userId, String choiceId) {
+      User user = userService.viewUserById(userId);
+      Choice choice = findChoiceById(choiceId);
 
-      Choices choice = findChoiceById(id);
+      choice.getUsers().add(user);
       choice.increaseVoteCount();
+      choice.setVoteTime(LocalDateTime.now());
 
       return choicesRepository.save(choice);
     }
 
-    private Choices findChoiceById(String choiceId) {
-        return choicesRepository.findChoiceById(choiceId).
+    private Choice findChoiceById(String choiceId) {
+        return choicesRepository.findChoiceByChoiceId(choiceId).
                 orElseThrow(()-> new ChoiceNotFoundException("This choice does not exist"));
     }
 }

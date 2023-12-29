@@ -1,7 +1,7 @@
 package com.system.poll.services.implementations;
 
 import com.system.poll.data.models.*;
-import com.system.poll.data.repository.PollRepository;
+import com.system.poll.data.repository.*;
 import com.system.poll.dtos.requests.PollRequest;
 
 import org.junit.jupiter.api.*;
@@ -23,27 +23,29 @@ class PollServiceImplTest {
     private PollServiceImpl pollService;
     @Mock
     private PollRepository pollRepository;
+    @Mock
+    private UserServiceImpl userService;
     private PollRequest pollRequest;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        Choices[] choices = {
-                new Choices("Peter Obi"),
-                new Choices("Atiku Abubakar")
+        user = new User("1", "Emmanuel", "Tade");
+        Choice[] choices = {
+                new Choice("Peter Obi"),
+                new Choice("Atiku Abubakar")
         };
-        String time = "01:00";
         pollRequest = new PollRequest(
                 "Who will be Nigeria's next president",
-                List.of(choices),
-                time
+                List.of(choices)
         );
     }
 
     @Test
     public void createPoll_GetsSaved() {
         when(pollRepository.save(any())).then(returnsFirstArg());
-
-        pollService.createPoll(pollRequest);
+        when(userService.viewUserById(user.getUserId())).thenReturn(user);
+        pollService.createPoll(user.getUserId(), pollRequest);
 
         assertNotNull(pollRequest);
         assertEquals(pollRequest.getQuestion(),
@@ -55,10 +57,12 @@ class PollServiceImplTest {
 
     @Test
     public void create_Empty_Poll_ThrowsNullPointerException() {
-        Choices[] choices = {};
+        when(userService.viewUserById(user.getUserId())).thenReturn(user);
+        Choice[] choices = {};
         pollRequest.setQuestion("");
         pollRequest.setChoices(List.of(choices));
-        assertThrows(NullPointerException.class, ()-> pollService.createPoll(pollRequest));
+
+        assertThrows(NullPointerException.class, ()-> pollService.createPoll(user.getUserId(), pollRequest));
     }
 
     @Test
@@ -66,27 +70,28 @@ class PollServiceImplTest {
         pollRequest.setSpecifiedEndTime("23:0");
         pollRequest.setSpecifiedEndTime("3:00");
 
-        assertThrows(DateTimeException.class, ()-> pollService.createPoll(pollRequest));
+        assertThrows(DateTimeException.class, ()-> pollService.createPoll(user.getUserId(), pollRequest));
     }
 
     @Test
     public void test_View_SavedPoll_ReturnsPoll() {
         Poll poll = new Poll();
-        when(pollRepository.findPollById(pollRequest.getPoll_id())).
+        when(pollRepository.findPollByPollId(poll.getPollId())).
                 thenReturn(Optional.of(new Poll()));
 
-        var foundPoll = pollService.viewPollById(pollRequest.getPoll_id());
+        var foundPoll = pollService.viewPollById(poll.getPollId());
 
         assertEquals(poll, foundPoll);
     }
 
     @Test
     public void test_Delete_SavedPoll_Returns_SuccessMessage() {
-        pollService.createPoll(pollRequest);
+        when(userService.viewUserById(user.getUserId())).thenReturn(user);
+        pollService.createPoll(user.getUserId(), pollRequest);
         assertNotNull(pollRequest);
 
         assertEquals("Poll has been deleted",
-                pollService.deletePoll(pollRequest.getPoll_id()));
-        verify(pollRepository).deletePollById(pollRequest.getPoll_id());
+                pollService.deletePoll(pollRequest.getPollId()));
+        verify(pollRepository).deletePollByPollId(pollRequest.getPollId());
     }
 }

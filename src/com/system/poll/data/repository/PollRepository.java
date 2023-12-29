@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 public interface PollRepository extends JpaRepository<Poll, String> {
-    Optional<Poll> findPollById(String id);
+    Optional<Poll> findPollByPollId(String id);
     @Transactional
-    void deletePollById(String pollId);
+    void deletePollByPollId(String pollId);
 
 }

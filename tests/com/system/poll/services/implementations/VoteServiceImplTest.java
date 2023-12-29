@@ -2,6 +2,7 @@ package com.system.poll.services.implementations;
 
 import com.system.poll.data.models.*;
 import com.system.poll.data.repository.*;
+import com.system.poll.dtos.requests.VoteRequest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
@@ -22,47 +23,45 @@ class VoteServiceImplTest {
   @Mock
   private ChoicesRepository choicesRepository;
   @Mock
-  private PollServiceImpl pollService;
+  private UserServiceImpl userService;
   private Poll poll;
-  Choices choices = new Choices(0L);
+  private Choice choice = new Choice();
+  private User user;
+  private VoteRequest voteRequest;
 
 
   @BeforeEach
   void setUp() {
-    Choices[] choices = {
-            new Choices("Peter Obi"),
-            new Choices("Atiku Abubakar")
+    user = new User("1", "Emmanuel", "Tade");
+    Choice[] choices = {
+            new Choice("Peter Obi"),
+            new Choice("Atiku Abubakar")
     };
     LocalTime specifiedEndTime = LocalTime.of(1, 0);
     poll = new Poll("Who will be Nigeria's next president",
             List.of(choices), specifiedEndTime);
+    voteRequest = new VoteRequest(user.getUserId(), choice.getChoiceId());
   }
 
   @Test
   void test_VoteOnChoice_ReturnsNumberOfVotes() {
-    when(pollService.viewPollById(poll.getId())).thenReturn(poll);
-    when(choicesRepository.findChoiceById(choices.getId())).
-            thenReturn(Optional.of(choices));
+    when(userService.viewUserById(user.getUserId())).thenReturn(user);
+    when(choicesRepository.findChoiceByChoiceId(choice.getChoiceId())).
+            thenReturn(Optional.of(choice));
     when(choicesRepository.save(any())).then(returnsFirstArg());
 
-    voteService.voteDisplayResults(poll.getId(), choices.getId());
-    voteService.voteDisplayResults(poll.getId(), choices.getId());
+    voteService.voteDisplayResults(voteRequest);
 
-    assertNotNull(choices.getVoteCount());
-    assertEquals(2L, choices.getVoteCount());
+    assertNotNull(choice.getVoteCount());
+    assertEquals(1L, choice.getVoteCount());
   }
 
   @Test
-  void test_ThrowException_When_User_Votes_On_Expired_Poll() {
-    assertFalse(poll.isOver());
+  void testWhenUserVotesDisplaysTheUserDetails() {
     test_VoteOnChoice_ReturnsNumberOfVotes();
-    assertEquals(2L, choices.getVoteCount());
 
-    poll.setSpecifiedEndTime(LocalTime.now().plusSeconds(1));
-
-    assertTrue(poll.isOver());
-    assertThrows(IllegalStateException.class,
-            ()-> voteService.voteDisplayResults(poll.getId(), choices.getId()));
-    assertEquals(2L, choices.getVoteCount());
+    assertEquals(List.of(new User("1", "Emmanuel", "Tade")),
+            choice.getUsers());
   }
+
 }

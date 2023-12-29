@@ -1,5 +1,6 @@
 package com.system.poll.controller;
 
+import com.system.poll.dtos.requests.VoteRequest;
 import com.system.poll.dtos.response.APIResponse;
 import com.system.poll.services.VoteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,18 +18,17 @@ public class VoteController {
         this.voteService = voteService;
     }
 
-    @GetMapping("vote/{id}/{choiceId}")
-    public ResponseEntity<?> voteOnChoice(@PathVariable String id,
-                                          @PathVariable String choiceId,
+    @PostMapping("")
+    public ResponseEntity<?> voteOnChoice(@RequestBody VoteRequest voteRequest,
                                           HttpServletRequest httpServletRequest) {
         APIResponse apiResponse = APIResponse.
                 builder().
                 timestamp(ZonedDateTime.now()).
                 status(HttpStatus.OK).
-                data(voteService.voteDisplayResults(id, choiceId)).
+                data(voteService.voteDisplayResults(voteRequest)).
                 path(httpServletRequest.getRequestURI()).
                 isSuccessful(true).
                 build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 }

@@ -1,7 +1,6 @@
 package com.system.poll.dtos.response;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;

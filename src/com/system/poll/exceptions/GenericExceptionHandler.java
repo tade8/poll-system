@@ -5,8 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DateTimeException;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 @RestControllerAdvice
 public class GenericExceptionHandler {
@@ -16,7 +15,7 @@ public class GenericExceptionHandler {
             ChoiceNotFoundException.class,
             NullPointerException.class,
             DateTimeException.class,
-            IllegalStateException.class
+            UserNotFoundException.class,
     })
     public ResponseEntity<?> handleGenericException(RuntimeException exception,
                                                     HttpServletRequest httpServletRequest) {
@@ -28,6 +27,6 @@ public class GenericExceptionHandler {
                 path(httpServletRequest.getRequestURI()).
                 timestamp(ZonedDateTime.now()).
                 build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 }

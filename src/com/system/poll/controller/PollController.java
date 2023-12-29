@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("poll/")
-@CrossOrigin("http://localhost:5500")
 public class PollController {
   private final PollService pollService;
 
@@ -18,21 +17,21 @@ public class PollController {
     this.pollService = pollService;
   }
 
-  @PostMapping("")
-  public ResponseEntity<?> createPoll(@RequestBody PollRequest pollRequest,
+  @PostMapping("{userId}")
+  public ResponseEntity<?> createPoll(@PathVariable String userId, @RequestBody PollRequest pollRequest,
                                  HttpServletRequest httpServletRequest) {
     APIResponse apiResponse = APIResponse.
             builder().
             timestamp(ZonedDateTime.now()).
-            status(HttpStatus.OK).
-            data(pollService.createPoll(pollRequest)).
+            status(HttpStatus.CREATED).
+            data(pollService.createPoll(userId, pollRequest)).
             path(httpServletRequest.getRequestURI()).
             isSuccessful(true).
             build();
-    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
-  @GetMapping("delete/{id}")
+  @DeleteMapping("{id}")
   public ResponseEntity<?> deletePoll(@PathVariable String id,
                                       HttpServletRequest httpServletRequest) {
     APIResponse apiResponse = APIResponse.
@@ -43,7 +42,7 @@ public class PollController {
             path(httpServletRequest.getRequestURI()).
             isSuccessful(true).
             build();
-    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 
   @GetMapping("{id}")
@@ -57,6 +56,6 @@ public class PollController {
             path(httpServletRequest.getRequestURI()).
             isSuccessful(true).
             build();
-    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
 }

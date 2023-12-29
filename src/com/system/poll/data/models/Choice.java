@@ -3,23 +3,27 @@ package com.system.poll.data.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Choices {
+@Builder
+public class Choice {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String choiceId;
     private String choiceText;
     private Long voteCount = 0L;
+    private LocalDateTime voteTime;
+    @JoinColumn(name = "choice_user_id")
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<User> users = new ArrayList<>();
 
-    public Choices(String choiceText) {
+    public Choice(String choiceText) {
         this.choiceText = choiceText;
-    }
-
-    public Choices(long voteCount) {
-        this.voteCount = voteCount;
     }
 
     public void increaseVoteCount() {

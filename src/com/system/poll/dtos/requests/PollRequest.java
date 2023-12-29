@@ -1,26 +1,21 @@
 package com.system.poll.dtos.requests;
 
-import com.system.poll.data.models.Choices;
+import com.system.poll.data.models.Choice;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
-@AllArgsConstructor
 public class PollRequest {
-    private String poll_id;
+    private String pollId;
+    private String userId;
     private String question;
-    private List<Choices> choices = new ArrayList<>();
+    private List<Choice> choices;
     private String specifiedEndTime;
 
-    public PollRequest(String question, List<Choices> choices, String specifiedEndTime) {
+    public PollRequest(String question, List<Choice> choices) {
         this.question = question;
         this.choices = choices;
-        this.specifiedEndTime = specifiedEndTime;
-    }
-
-    public PollRequest() {
-        specifiedEndTime = "23:59";
+        this.specifiedEndTime = "23:59";
     }
 }
