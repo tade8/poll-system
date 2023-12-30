@@ -6,6 +6,7 @@ import com.system.poll.dtos.requests.PollRequest;
 import com.system.poll.exceptions.*;
 import com.system.poll.services.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
     private final UserService userService;
@@ -49,6 +51,17 @@ public class PollServiceImpl implements PollService {
     public String deletePoll(String pollId) {
         pollRepository.deletePollByPollId(pollId);
         return "Poll has been deleted";
+    }
+
+    @Override
+    public long getPollTotalVotes(String pollId) {
+        Poll poll = viewPollById(pollId);
+        long totalPollVotes = 0;
+        for (Choice choice : poll.getChoices())
+            totalPollVotes += choice.getVoteCount();
+        poll.setPollTotalVotes(totalPollVotes);
+        pollRepository.save(poll);
+        return poll.getPollTotalVotes();
     }
 
     @Override

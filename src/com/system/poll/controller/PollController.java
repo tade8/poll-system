@@ -58,4 +58,18 @@ public class PollController {
             build();
     return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
   }
+
+  @GetMapping("votes/{pollId}")
+  public ResponseEntity<?> getPollTotalVotes(@PathVariable String pollId,
+                                   HttpServletRequest httpServletRequest) {
+    APIResponse apiResponse = APIResponse.
+            builder().
+            timestamp(ZonedDateTime.now()).
+            status(HttpStatus.OK).
+            data(pollService.getPollTotalVotes(pollId)).
+            path(httpServletRequest.getRequestURI()).
+            isSuccessful(true).
+            build();
+    return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+  }
 }

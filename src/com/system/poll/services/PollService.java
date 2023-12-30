@@ -7,4 +7,5 @@ public interface PollService {
     String createPoll(String userId, PollRequest pollRequest);
     Poll viewPollById(String pollId);
     String deletePoll(String pollId);
+    long getPollTotalVotes(String pollId);
 }

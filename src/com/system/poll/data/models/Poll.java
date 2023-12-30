@@ -23,6 +23,7 @@ public class Poll {
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "poll_user_id")
     private User pollUser = new User();
+    private long pollTotalVotes;
 
 
     public Poll(String question, List<Choice> choices, LocalTime specifiedEndTime) {
