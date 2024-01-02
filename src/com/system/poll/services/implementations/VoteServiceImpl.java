@@ -18,10 +18,12 @@ import java.time.LocalDateTime;
 public class VoteServiceImpl implements VoteService {
     private final ChoicesRepository choicesRepository;
     private final UserService userService;
+    private final PollService pollService;
 
     @Override
     public VoteResultsResponse voteDisplayResults(VoteRequest voteRequest) {
       Choice savedChoice = saveChoiceWithVote(voteRequest.getUserId(), voteRequest.getChoiceId());
+      pollService.getPollTotalVotes(voteRequest.getPollId());
       return new VoteResultsResponse(savedChoice.getUsers(), savedChoice.getVoteCount(), savedChoice.getVoteTime());
     }
 

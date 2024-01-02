@@ -8,4 +8,5 @@ import lombok.Data;
 public class VoteRequest {
   private String userId;
   private String choiceId;
+  private String pollId;
 }
