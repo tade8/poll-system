@@ -24,7 +24,12 @@ public class VoteServiceImpl implements VoteService {
     public VoteResultsResponse voteDisplayResults(VoteRequest voteRequest) {
       Choice savedChoice = saveChoiceWithVote(voteRequest.getUserId(), voteRequest.getChoiceId());
       pollService.getPollTotalVotes(voteRequest.getPollId());
-      return new VoteResultsResponse(savedChoice.getUsers(), savedChoice.getVoteCount(), savedChoice.getVoteTime());
+      return VoteResultsResponse.
+              builder().
+              users(savedChoice.getUsers()).
+              voteCount(savedChoice.getVoteCount()).
+              voteTime(savedChoice.getVoteTime())
+              .build();
     }
 
     private Choice saveChoiceWithVote(String userId, String choiceId) {
@@ -40,6 +45,6 @@ public class VoteServiceImpl implements VoteService {
 
     private Choice findChoiceById(String choiceId) {
         return choicesRepository.findChoiceByChoiceId(choiceId).
-                orElseThrow(()-> new ChoiceNotFoundException("This choice does not exist"));
+                orElseThrow(()-> new ChoiceNotFoundException("The choice with id: " + choiceId + " does not exist"));
     }
 }

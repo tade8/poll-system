@@ -34,7 +34,7 @@ public class PollServiceImpl implements PollService {
             throw new NullPointerException("This field cannot be empty");
         }
         pollRepository.save(poll);
-        return "Poll has been created";
+        return "Poll has been created successfully";
     }
 
     private static LocalTime formatSpecifiedTime(PollRequest pollRequest, DateTimeFormatter timeFormatter) {
@@ -43,14 +43,14 @@ public class PollServiceImpl implements PollService {
                     pollRequest.getSpecifiedEndTime(), timeFormatter);
         }
         catch (RuntimeException e) {
-            throw new DateTimeException("This time format is invalid");
+            throw new DateTimeException("This time format: " + pollRequest.getSpecifiedEndTime() + " is invalid");
         }
     }
 
     @Override
     public String deletePoll(String pollId) {
         pollRepository.deletePollByPollId(pollId);
-        return "Poll has been deleted";
+        return "Poll has been deleted successfully";
     }
 
     @Override
@@ -68,6 +68,6 @@ public class PollServiceImpl implements PollService {
     public Poll viewPollById(String pollId) {
         return pollRepository.findPollByPollId(pollId).
                 orElseThrow(()-> new PollNotFoundException(
-                        "This poll does not exist"));
+                        "The poll with id: " +  pollId + " does not exist"));
     }
 }

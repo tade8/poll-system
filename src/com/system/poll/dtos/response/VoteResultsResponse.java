@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
-@Data
+@Builder
 public class VoteResultsResponse {
     private List<User> users;
     private Long voteCount;
