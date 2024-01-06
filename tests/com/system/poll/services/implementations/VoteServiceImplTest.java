@@ -24,32 +24,34 @@ class VoteServiceImplTest {
   private ChoicesRepository choicesRepository;
   @Mock
   private UserServiceImpl userService;
+  @Mock
+  private PollServiceImpl pollService;
+  private Choice choice;
   private Poll poll;
-  private Choice choice = new Choice();
-  private User user;
-  private VoteRequest voteRequest;
 
 
   @BeforeEach
   void setUp() {
-    user = new User("1", "Emmanuel", "Tade");
     Choice[] choices = {
-            new Choice("Peter Obi"),
-            new Choice("Atiku Abubakar")
+            new Choice("1", "Peter Obi"),
+            new Choice("2", "Atiku Abubakar")
     };
     LocalTime specifiedEndTime = LocalTime.of(1, 0);
     poll = new Poll("Who will be Nigeria's next president",
             List.of(choices), specifiedEndTime);
-    voteRequest = new VoteRequest(user.getUserId(), choice.getChoiceId());
   }
 
   @Test
   void test_VoteOnChoice_ReturnsNumberOfVotes() {
-    when(userService.viewUserById(user.getUserId())).thenReturn(user);
-    when(choicesRepository.findChoiceByChoiceId(choice.getChoiceId())).
+    User user = new User("1", "Emmanuel", "Tade");
+    VoteRequest voteRequest = new VoteRequest(user.getUserId(), poll.getChoices().get(0).getChoiceId());
+    choice = new Choice(poll.getChoices().get(0).getChoiceId());
+
+    when(userService.viewUserById(voteRequest.getUserId())).thenReturn(user);
+    when(choicesRepository.findChoiceByChoiceId(poll.getChoices().get(0).getChoiceId())).
             thenReturn(Optional.of(choice));
     when(choicesRepository.save(any())).then(returnsFirstArg());
-
+    when(pollService.getPollTotalVotes(voteRequest.getPollId())).thenReturn(1L);
     voteService.voteDisplayResults(voteRequest);
 
     assertNotNull(choice.getVoteCount());

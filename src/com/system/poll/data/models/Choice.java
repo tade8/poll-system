@@ -26,6 +26,11 @@ public class Choice {
         this.choiceText = choiceText;
     }
 
+    public Choice(String choiceId, String choiceText) {
+        this.choiceId = choiceId;
+        this.choiceText = choiceText;
+    }
+
     public void increaseVoteCount() {
         voteCount += 1;
     }

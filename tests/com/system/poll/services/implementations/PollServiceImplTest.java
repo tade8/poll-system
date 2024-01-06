@@ -90,7 +90,7 @@ class PollServiceImplTest {
         pollService.createPoll(user.getUserId(), pollRequest);
         assertNotNull(pollRequest);
 
-        assertEquals("Poll has been deleted",
+        assertEquals("Poll has been deleted successfully",
                 pollService.deletePoll(pollRequest.getPollId()));
         verify(pollRepository).deletePollByPollId(pollRequest.getPollId());
     }
