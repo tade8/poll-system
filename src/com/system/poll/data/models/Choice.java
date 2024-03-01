@@ -10,7 +10,6 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 public class Choice {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

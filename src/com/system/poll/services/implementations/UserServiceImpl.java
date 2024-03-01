@@ -3,6 +3,7 @@ package com.system.poll.services.implementations;
 import com.system.poll.data.models.User;
 import com.system.poll.data.repository.UserRepository;
 import com.system.poll.dtos.requests.UserRequest;
+import com.system.poll.exceptions.InvalidInputException;
 import com.system.poll.exceptions.UserNotFoundException;
 import com.system.poll.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createAndReturnUser(UserRequest userRequest) {
-        User user = User.builder()
+        if (userRequest.getFirstName().isEmpty() || userRequest.getLastName().isEmpty())
+            throw new InvalidInputException("This field is required");
+        return userRepository
+                .save(User.builder()
                 .firstName(userRequest.getFirstName())
                 .lastName(userRequest.getLastName())
-                .build();
-        userRepository.save(user);
-        return viewUserById(user.getUserId());
+                .build());
     }
 
     @Override
